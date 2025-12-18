@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Apoio Pedagógico Digital Personalizado para Crianças no Espectro Autista">
+    <meta name="theme-color" content="#7B9ACC">
+    <title>SAPEA - Sistema de Apoio Pedagógico Digital</title>
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Skip to main content para acessibilidade -->
+    <a href="#main-content" class="skip-link">Pular para conteúdo principal</a>
+    <div id="app">
+        <!-- Tela de Login será carregada por padrão -->
+        <div id="login-screen" class="screen active">
+            <div class="login-container">
+                <div class="logo-container">
+                    <div class="logo-circle">
+                        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                            <circle cx="40" cy="40" r="35" fill="#7B9ACC" opacity="0.2"/>
+                            <path d="M40 20 L40 60 M20 40 L60 40" stroke="#7B9ACC" stroke-width="4" stroke-linecap="round"/>
+                            <circle cx="40" cy="40" r="8" fill="#7B9ACC"/>
+                        </svg>
+                    </div>
+                    <h1 class="logo-text">SAPEA</h1>
+                    <p class="logo-subtitle">Sistema de Apoio Pedagógico Digital</p>
+                </div>
+
+                <div class="login-form">
+                    <div class="form-group">
+                        <label for="user-email" class="form-label">E-mail</label>
+                        <input type="email" id="user-email" class="form-input" placeholder="seu@email.com" autocomplete="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-password" class="form-label">Senha</label>
+                        <input type="password" id="user-password" class="form-input" placeholder="••••••••" autocomplete="current-password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-profile" class="form-label">Perfil</label>
+                        <select id="user-profile" class="form-select">
+                            <option value="">Selecione seu perfil</option>
+                            <option value="pais">Pais/Responsáveis</option>
+                            <option value="escola">Equipe Escolar</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-large" onclick="handleLogin()">
+                        Entrar
+                    </button>
+
+                    <div class="login-help">
+                        <p class="help-text">Precisa de ajuda? Entre em contato com a escola.</p>
+                        <button type="button" class="btn-link" onclick="showScreen('crianca-screen')" style="margin-top: 1rem; color: var(--color-primary); text-decoration: underline; background: none; border: none; cursor: pointer; font-size: 0.875rem;">
+                            Ver interface da criança (modo demonstração)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interface da Criança -->
+        <div id="crianca-screen" class="screen">
+            <header class="crianca-header">
+                <div class="header-content">
+                    <h2 class="header-title">Olá, João! 👋</h2>
+                    <div class="time-display" id="current-time">09:30</div>
+                </div>
+            </header>
+
+            <main class="crianca-main" id="main-content">
+                <section class="rotina-section">
+                    <h3 class="section-title">Sua Rotina de Hoje</h3>
+                    
+                    <div class="timeline-container">
+                        <div class="timeline-item completed">
+                            <div class="timeline-icon">🌅</div>
+                            <div class="timeline-content">
+                                <p class="timeline-label">Chegada</p>
+                                <p class="timeline-time">08:00</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item active" id="current-activity">
+                            <div class="timeline-icon-large">📚</div>
+                            <div class="timeline-content">
+                                <p class="timeline-label-large">AGORA</p>
+                                <p class="timeline-activity">Aula de Português</p>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="activity-progress" style="width: 60%"></div>
+                                </div>
+                                <p class="timeline-time-remaining" id="time-remaining">Faltam 20 minutos</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item upcoming">
+                            <div class="timeline-icon">🍎</div>
+                            <div class="timeline-content">
+                                <p class="timeline-label">DEPOIS</p>
+                                <p class="timeline-activity">Lanche</p>
+                                <p class="timeline-time">10:30</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item upcoming">
+                            <div class="timeline-icon">🎨</div>
+                            <div class="timeline-content">
+                                <p class="timeline-label">DEPOIS</p>
+                                <p class="timeline-activity">Arte</p>
+                                <p class="timeline-time">11:00</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item upcoming">
+                            <div class="timeline-icon">🏠</div>
+                            <div class="timeline-content">
+                                <p class="timeline-label">DEPOIS</p>
+                                <p class="timeline-activity">Voltar para casa</p>
+                                <p class="timeline-time">12:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="actions-section">
+                    <button class="action-btn btn-tour" onclick="showTour()">
+                        <span class="action-icon">🏫</span>
+                        <span class="action-label">Ver Lugares</span>
+                    </button>
+                    <button class="action-btn btn-help" onclick="showHelp()">
+                        <span class="action-icon">💙</span>
+                        <span class="action-label">Preciso de Ajuda</span>
+                    </button>
+                </section>
+            </main>
+
+            <!-- Botão SOS Fixo -->
+            <button class="sos-button" id="sos-btn" onclick="triggerSOS()" aria-label="Preciso de ajuda urgente">
+                <span class="sos-icon">🆘</span>
+                <span class="sos-text">Ajuda</span>
+            </button>
+        </div>
+
+        <!-- Painel Pais/Responsáveis -->
+        <div id="pais-screen" class="screen">
+            <header class="dashboard-header">
+                <h1 class="dashboard-title">Painel do Responsável</h1>
+                <button class="btn-icon" onclick="showSettings()" aria-label="Configurações">
+                    <span>⚙️</span>
+                </button>
+            </header>
+
+            <main class="dashboard-main" id="main-content">
+                <section class="status-card">
+                    <h2 class="card-title">Status de Hoje</h2>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-icon status-good">😊</div>
+                            <p class="status-label">Estado Emocional</p>
+                            <p class="status-value">Calmo</p>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon status-warning">⚠️</div>
+                            <p class="status-label">Próxima Transição</p>
+                            <p class="status-value">Em 20 min</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="alert-card">
+                    <h2 class="card-title">Alertas de Transição</h2>
+                    <div class="alert-list">
+                        <div class="alert-item alert-low">
+                            <div class="alert-indicator"></div>
+                            <div class="alert-content">
+                                <p class="alert-title">Lanche</p>
+                                <p class="alert-time">10:30 - Risco Baixo</p>
+                            </div>
+                        </div>
+                        <div class="alert-item alert-medium">
+                            <div class="alert-indicator"></div>
+                            <div class="alert-content">
+                                <p class="alert-title">Mudança de Sala</p>
+                                <p class="alert-time">11:00 - Risco Médio</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="calendar-card">
+                    <h2 class="card-title">Calendário</h2>
+                    <div class="calendar-view" id="calendar-view">
+                        <!-- Calendário será gerado via JS -->
+                    </div>
+                </section>
+
+                <section class="history-card">
+                    <h2 class="card-title">Histórico de Crises</h2>
+                    <div class="history-list">
+                        <div class="history-item">
+                            <div class="history-date">15/03/2024</div>
+                            <div class="history-content">
+                                <p class="history-trigger">Gatilho: Mudança inesperada de rotina</p>
+                                <p class="history-strategy">Estratégia: Espaço tranquilo + música calma</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <nav class="bottom-nav">
+                <button class="nav-item active" onclick="showScreen('pais-screen')">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Início</span>
+                </button>
+                <button class="nav-item" onclick="showScreen('calendar-screen')">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-label">Calendário</span>
+                </button>
+                <button class="nav-item" onclick="showScreen('history-screen')">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Histórico</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Painel Equipe Escolar -->
+        <div id="escola-screen" class="screen">
+            <header class="dashboard-header">
+                <h1 class="dashboard-title">Painel da Escola</h1>
+                <button class="btn-icon" onclick="showSettings()" aria-label="Configurações">
+                    <span>⚙️</span>
+                </button>
+            </header>
+
+            <main class="dashboard-main" id="main-content">
+                <section class="students-card">
+                    <h2 class="card-title">Crianças Vinculadas</h2>
+                    <div class="students-list">
+                        <div class="student-item">
+                            <div class="student-avatar">👦</div>
+                            <div class="student-info">
+                                <p class="student-name">João Silva</p>
+                                <p class="student-status status-good">Status: Calmo</p>
+                            </div>
+                            <div class="student-risk risk-low">Baixo</div>
+                        </div>
+                        <div class="student-item">
+                            <div class="student-avatar">👧</div>
+                            <div class="student-info">
+                                <p class="student-name">Maria Santos</p>
+                                <p class="student-status status-warning">Status: Ansiosa</p>
+                            </div>
+                            <div class="student-risk risk-medium">Médio</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="actions-card">
+                    <h2 class="card-title">Ações Rápidas</h2>
+                    <div class="action-grid">
+                        <button class="action-card-btn" onclick="showRoutineManager()">
+                            <span class="action-card-icon">📋</span>
+                            <span class="action-card-label">Gerenciar Rotina</span>
+                        </button>
+                        <button class="action-card-btn" onclick="showCrisisRegister()">
+                            <span class="action-card-icon">📝</span>
+                            <span class="action-card-label">Registrar Crise</span>
+                        </button>
+                        <button class="action-card-btn" onclick="showEnvironmentManager()">
+                            <span class="action-card-icon">🏫</span>
+                            <span class="action-card-label">Ambientes</span>
+                        </button>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Modal de Tours Virtuais -->
+        <div id="tour-modal" class="modal">
+            <div class="modal-content modal-large">
+                <button class="modal-close" onclick="closeModal('tour-modal')" aria-label="Fechar">✕</button>
+                <h2 class="modal-title">Lugares da Escola</h2>
+                <div class="tour-gallery">
+                    <div class="tour-item">
+                        <div class="tour-image">📚</div>
+                        <p class="tour-label">Sala de Aula</p>
+                    </div>
+                    <div class="tour-item">
+                        <div class="tour-image">🍎</div>
+                        <p class="tour-label">Refeitório</p>
+                    </div>
+                    <div class="tour-item">
+                        <div class="tour-image">🚽</div>
+                        <p class="tour-label">Banheiro</p>
+                    </div>
+                    <div class="tour-item">
+                        <div class="tour-image">🌳</div>
+                        <p class="tour-label">Pátio</p>
+                    </div>
+                </div>
+                <div class="tour-navigation">
+                    <button class="btn btn-secondary" onclick="closeModal('tour-modal')">Fechar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Ajuda/SOS -->
+        <div id="help-modal" class="modal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal('help-modal')" aria-label="Fechar">✕</button>
+                <div class="help-content">
+                    <div class="help-icon-large">💙</div>
+                    <h2 class="modal-title">Ajuda Enviada!</h2>
+                    <p class="help-message">Alguém virá te ajudar em breve. Você está seguro.</p>
+                    <button class="btn btn-primary" onclick="closeModal('help-modal')">Entendi</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Configurações -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content modal-large">
+                <button class="modal-close" onclick="closeModal('settings-modal')" aria-label="Fechar">✕</button>
+                <h2 class="modal-title">Configurações</h2>
+                <div class="settings-content">
+                    <section class="setting-section">
+                        <h3 class="setting-title">Cores</h3>
+                        <div class="color-picker">
+                            <button class="color-option" data-color="blue" style="background: #7B9ACC;" onclick="changeColor('blue')"></button>
+                            <button class="color-option" data-color="green" style="background: #9ACD9A;" onclick="changeColor('green')"></button>
+                            <button class="color-option" data-color="purple" style="background: #B19CD9;" onclick="changeColor('purple')"></button>
+                            <button class="color-option" data-color="sand" style="background: #D4C5A9;" onclick="changeColor('sand')"></button>
+                        </div>
+                    </section>
+                    <section class="setting-section">
+                        <h3 class="setting-title">Modo Mínimo</h3>
+                        <label class="switch">
+                            <input type="checkbox" id="minimal-mode" onchange="toggleMinimalMode()">
+                            <span class="slider"></span>
+                        </label>
+                        <p class="setting-description">Reduz estímulos visuais ao máximo</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
+
