@@ -8,12 +8,14 @@
 ## Preparação do Ambiente
 
 1. Clone o repositório:
+
 ```bash
 git clone https://github.com/ocaiomnz/ES2.git
 cd ES2
 ```
 
 2. Instale as dependências:
+
 ```bash
 npm install
 ```
@@ -21,6 +23,7 @@ npm install
 ## Execução
 
 Inicie o servidor em modo de desenvolvimento:
+
 ```bash
 npm run dev
 ```
