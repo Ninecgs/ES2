@@ -3,11 +3,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import "dotenv/config";
 
-//------------------------------------------------------------------
-/**
- * SOLID: SRP (Single Responsibility Principle)
- * Esta classe tem UMA responsabilidade: configurar e iniciar o servidor
- */
 class Server {
   private app: Express;
   private port: number;
@@ -19,9 +14,6 @@ class Server {
     this.setupRoutes();
   }
 
-  /**
-   * SRP: Middlewares separados em método próprio
-   */
   private setupMiddlewares(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
@@ -32,10 +24,6 @@ class Server {
     this.app.use(express.static(path.join(__dirname, 'public')));
   }
 
-  /**
-   * SRP: Rotas separadas em método próprio
-   * OCP: Aberto para extensão (adicionar rotas), fechado para modificação
-   */
   private setupRoutes(): void {
     // Health check
     this.app.get('/api/health', (req, res) => {
@@ -53,9 +41,6 @@ class Server {
     });
   }
 
-  /**
-   * Interface pública clara
-   */
   public start(): void {
     this.app.listen(this.port, () => {
       console.log(`SAPEA Server`);
@@ -64,9 +49,6 @@ class Server {
     });
   }
 
-  /**
-   * Permite acesso ao app para testes (DIP - Dependency Inversion)
-   */
   public getApp(): Express {
     return this.app;
   }
