@@ -20,22 +20,40 @@ cd ES2
 npm install
 ```
 
-## Execução
+3. Setup do banco:
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
 
-Inicie o servidor em modo de desenvolvimento:
-
+4. Rodar
 ```bash
 npm run dev
 ```
+
+
+
+
+
 
 ## Estrutura do Projeto
 
 ```
 src/
-├── server.ts              # Ponto de entrada da aplicação
-├── application/           # Casos de uso e DTOs
-├── domain/                # Entidades e repositórios
-├── infra/                 # Configurações e serviços
+├── Domain Layer           # Entidades e repositórios
+│   ├── Entities (Criança, Evento)
+│   ├── Value Objects (Email, NivelRisco)
+│   └── Repository Interfaces
+│
+├── Application Layer      # Casos de uso e DTOs
+│   ├── Use Cases
+│   └── DTOs
+│
+├── Infrastructure Layer   # Configurações e serviços
+    ├── Database (Prisma)
+    ├── HTTP (Express)
+    └── Config 
 ├── presentation/          # Controllers, middlewares e rotas
+├── server.ts              # Ponto de entrada da aplicação
 └── public/                # Arquivos estáticos
 ```
