@@ -31,11 +31,6 @@ npx prisma migrate dev
 npm run dev
 ```
 
-
-
-
-
-
 ## Estrutura do Projeto
 
 ```
