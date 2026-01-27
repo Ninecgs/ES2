@@ -37,6 +37,17 @@ export class Usuario extends Entity {
     return new Usuario(undefined, nome, email, tipoPerfil, senhaHash, escolaId);
   }
 
+  public static reconstitute(
+    id: string,
+    nome: string,
+    email: Email,
+    tipoPerfil: TipoPerfil,
+    senhaHash: string,
+    escolaId?: string,
+  ): Usuario {
+    return new Usuario(id, nome, email, tipoPerfil, senhaHash, escolaId);
+  }
+
   public isAdmin(): boolean {
     return this._tipoPerfil.isAdmin();
   }

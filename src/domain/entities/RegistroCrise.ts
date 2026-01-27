@@ -42,6 +42,26 @@ export class RegistroCrise extends Entity {
     );
   }
 
+  public static fromPersistence(input: {
+    id?: string | undefined;
+    dataHora: string;
+    intensidade: string;
+    descricao?: string | undefined;
+    gatilhoIdentificado?: string | undefined;
+    foiEficaz?: boolean | undefined;
+  }): RegistroCrise {
+    const dataHora = new Date(input.dataHora);
+    const intensidade = IntensidadeDaCrise.fromString(input.intensidade);
+    return new RegistroCrise(
+      input.id,
+      dataHora,
+      intensidade,
+      input.descricao,
+      input.gatilhoIdentificado,
+      input.foiEficaz,
+    );
+  }
+
   public exportarDados(): string {
     return `Relatório de Crise - ID: ${this.id}, Data: ${this._dataHora}, Intensidade: ${this._intensidade.intensidade}`;
   }

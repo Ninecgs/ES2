@@ -6,10 +6,10 @@ import {
 } from "../value-objects/index.js";
 
 export class Crianca extends Entity {
-  private readonly _dataNascimento: DataNascimento;
-  private readonly _grauTEA: GrauTEA;
-  private readonly _grauSuporte: GrauSuporte;
-  private readonly _escolaId: string | undefined;
+  private _dataNascimento: DataNascimento;
+  private _grauTEA: GrauTEA;
+  private _grauSuporte: GrauSuporte;
+  private _escolaId: string | undefined;
   private _responsavelIds: string[];
 
   private constructor(
@@ -42,6 +42,24 @@ export class Crianca extends Entity {
       grauSuporte,
       escolaId,
       responsavelIds,
+    );
+  }
+
+  public static fromPersistence(input: {
+    id?: string | undefined;
+    dataNascimento: string;
+    grauTEA: string;
+    grauSuporte: string;
+    escolaId?: string;
+    responsavelIds?: string[];
+  }): Crianca {
+    return new Crianca(
+      input.id,
+      DataNascimento.create(new Date(input.dataNascimento)),
+      GrauTEA.fromString(input.grauTEA),
+      GrauSuporte.fromString(input.grauSuporte),
+      input.escolaId,
+      input.responsavelIds,
     );
   }
 
@@ -78,9 +96,22 @@ export class Crianca extends Entity {
     return this._responsavelIds;
   }
 
-  public adicionarResponsavel(responsavelId: string): void {
+  public alterarResponsavel(responsavelId: string): void {
     if (!this._responsavelIds.includes(responsavelId)) {
       this._responsavelIds.push(responsavelId);
     }
+  }
+
+  public alterarEscola(escolaId: string | undefined): void {
+    this._escolaId = escolaId;
+  }
+  public alterarGrauTEA(grauTEA: GrauTEA): void {
+    this._grauTEA = grauTEA;
+  }
+  public alterarGrauSuporte(grauSuporte: GrauSuporte): void {
+    this._grauSuporte = grauSuporte;
+  }
+  public alterarDataNascimento(dataNascimento: DataNascimento): void {
+    this._dataNascimento = dataNascimento;
   }
 }

@@ -5,3 +5,4 @@ export { RegistroCrise } from "./RegistroCrise.js";
 export { PedidoSuporte } from "./PedidoSuporte.js";
 export { Intervencao } from "./Intervencao.js";
 export { Usuario } from "./Usuario.js";
+export { AmbienteEscolar } from "./AmbienteEscolar.js";

@@ -34,6 +34,22 @@ export class Intervencao extends Entity {
     return new Intervencao(undefined, dataHora, estrategia, aplicadaPor);
   }
 
+  public static fromPersistence(input: {
+    id?: string | undefined;
+    dataHora: string;
+    estrategia: string;
+    aplicadaPor: string;
+    resultado?: string | undefined;
+  }): Intervencao {
+    return new Intervencao(
+      input.id,
+      new Date(input.dataHora),
+      input.estrategia,
+      input.aplicadaPor,
+      input.resultado,
+    );
+  }
+
   public registrarResultado(resultado: string): void {
     this._resultado = resultado;
   }

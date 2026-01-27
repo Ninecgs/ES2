@@ -47,10 +47,28 @@ export class PedidoSuporte extends Entity {
     );
   }
 
+  public static fromPersistence(input: {
+    id?: string | undefined;
+    dataHora: string;
+    status: string;
+    registroCrise: {
+      id?: string | undefined;
+      dataHora: string;
+      intensidade: string;
+      descricao?: string | undefined;
+      gatilhoIdentificado?: string | undefined;
+      foiEficaz?: boolean | undefined;
+    };
+  }): PedidoSuporte {
+    const dataHora = new Date(input.dataHora);
+    const status = StatusAtendimento.fromString(input.status);
+    const registroCrise = RegistroCrise.fromPersistence(input.registroCrise);
+
+    return new PedidoSuporte(input.id, dataHora, status, registroCrise);
+  }
+
   public notificarSuporte(): void {
-    console.log(
-      `Notificação de suporte enviada para o pedido ${this._id}`,
-    );
+    console.log(`Notificação de suporte enviada para o pedido ${this._id}`);
   }
 
   public atualizarStatus(novoStatus: StatusAtendimento): void {
