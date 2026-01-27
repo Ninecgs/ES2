@@ -6,6 +6,7 @@ export class Usuario extends Entity {
   private readonly _email: Email;
   private readonly _tipoPerfil: TipoPerfil;
   private readonly _senhaHash: string;
+  private readonly _escolaId: string | undefined;
 
   private constructor(
     id: string | undefined,
@@ -13,12 +14,14 @@ export class Usuario extends Entity {
     email: Email,
     tipoPerfil: TipoPerfil,
     senhaHash: string,
+    escolaId?: string,
   ) {
     super(id);
     this._nome = nome;
     this._email = email;
     this._tipoPerfil = tipoPerfil;
     this._senhaHash = senhaHash;
+    this._escolaId = escolaId;
   }
 
   public static create(
@@ -26,15 +29,20 @@ export class Usuario extends Entity {
     email: Email,
     tipoPerfil: TipoPerfil,
     senhaHash: string,
+    escolaId?: string,
   ): Usuario {
     if (!nome || nome.trim().length === 0) {
       throw new Error("Nome é obrigatório");
     }
-    return new Usuario(undefined, nome, email, tipoPerfil, senhaHash);
+    return new Usuario(undefined, nome, email, tipoPerfil, senhaHash, escolaId);
   }
 
   public isAdmin(): boolean {
     return this._tipoPerfil.isAdmin();
+  }
+
+  public belongsToEscola(escolaId: string): boolean {
+    return this._escolaId !== undefined && this._escolaId === escolaId;
   }
 
   public get nome(): string {
@@ -51,5 +59,9 @@ export class Usuario extends Entity {
 
   public get senhaHash(): string {
     return this._senhaHash;
+  }
+
+  public get escolaId(): string | undefined {
+    return this._escolaId;
   }
 }
