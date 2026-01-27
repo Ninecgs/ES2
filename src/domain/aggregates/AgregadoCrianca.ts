@@ -27,13 +27,27 @@ export class AgregadoCrianca {
     return new AgregadoCrianca(crianca, [], [], []);
   }
 
+  public static fromPersistence(input: {
+    crianca: Crianca;
+    crises: RegistroCrise[];
+    pedidosSuporte: PedidoSuporte[];
+    intervencoes: Intervencao[];
+  }): AgregadoCrianca {
+    return new AgregadoCrianca(
+      input.crianca,
+      input.crises,
+      input.pedidosSuporte,
+      input.intervencoes,
+    );
+  }
+
   public adicionarCrise(crise: RegistroCrise): AgregadoCrianca {
     const crisesNaoResolvidas = this._crises.filter(
       (c) => c.foiEficaz === undefined,
     );
     if (crisesNaoResolvidas.length > 0) {
       throw new Error(
-        "Não é possível adicionar uma crise: já existe uma crise não resolvida",
+        "Não é possível adicionar uma nova crise: já existe uma crise em andamento",
       );
     }
 
@@ -74,6 +88,7 @@ export class AgregadoCrianca {
     );
     return novoAgregado;
   }
+  // TO-DO adicionar mais invariantes conforme regras de negócio
 
   private validarInvariantes(): void {
     // Invariante 1: Máximo uma crise não resolvida
