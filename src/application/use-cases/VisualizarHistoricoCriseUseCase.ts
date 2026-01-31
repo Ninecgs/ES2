@@ -9,7 +9,6 @@ export type CriseHistoricoDTO = {
   gatilhoIdentificado?: string | undefined;
   foiEficaz?: boolean | undefined;
 };
-// Use case para visualizar o histórico de crises de uma criança (So deve ser acessado por Professores e pais/responsaveis associados)
 export class VisualizarHistoricoCriseUseCase {
   constructor(private readonly criancaRepo: ICriancaRepository) {}
 

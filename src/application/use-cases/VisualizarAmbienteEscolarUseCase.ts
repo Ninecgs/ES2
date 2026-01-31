@@ -8,7 +8,6 @@ export type AmbienteEscolarDTO = {
   descricao?: string | undefined;
   midias?: readonly string[] | undefined;
 };
-// Use case para visualizar os ambientes escolares associados à escola de uma criança(e quanto a midias?)
 export class VisualizarAmbienteEscolarUseCase {
   constructor(
     private readonly criancaRepo: ICriancaRepository,
