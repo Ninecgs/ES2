@@ -5,4 +5,5 @@ export interface ICriancaRepository {
   salvar(agregado: AgregadoCrianca): Promise<void>;
   buscarPorFiltro?(filtro: { nome?: string }): Promise<AgregadoCrianca[]>;
   buscarPorEscola?(escolaId: string): Promise<AgregadoCrianca[]>;
+  remover?(id: string): Promise<void>;
 }

@@ -265,4 +265,10 @@ export class PrismaCriancaRepository implements ICriancaRepository {
       })),
     };
   }
+
+  public async remover(id: string): Promise<void> {
+    await this.prisma.crianca.delete({
+      where: { id },
+    });
+  }
 }
