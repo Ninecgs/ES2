@@ -1,22 +1,22 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { PrismaCriancaRepository } from "../../database/PrismaCriancaRepository.js";
-import {
-  inMemoryEventoRepository,
-  inMemoryAmbienteEscolarRepository,
-} from "../../database/inMemoryRepositories.js";
+import { PrismaEventoRepository } from "../../database/PrismaEventoRepository.js";
+import { PrismaAmbienteEscolarRepository } from "../../database/PrismaAmbienteEscolarRepository.js";
 import { SolicitarSuporteUseCase } from "../../../application/use-cases/SolicitarSuporteUseCase.js";
 import { VisualizarCalendarioUseCase } from "../../../application/use-cases/VisualizarCalendarioUseCase.js";
 import { VisualizarAmbienteEscolarUseCase } from "../../../application/use-cases/VisualizarAmbienteEscolarUseCase.js";
+import { NotificacaoService } from "../../services/NotificacaoService.js";
 
 const router = express.Router();
 
 const prisma = new PrismaClient();
 const criancaRepo = new PrismaCriancaRepository(prisma);
-const eventoRepo = inMemoryEventoRepository;
-const ambienteRepo = inMemoryAmbienteEscolarRepository;
+const eventoRepo = new PrismaEventoRepository(prisma);
+const ambienteRepo = new PrismaAmbienteEscolarRepository(prisma);
+const notificacaoService = new NotificacaoService();
 
-const solicitarSuporteUseCase = new SolicitarSuporteUseCase(criancaRepo);
+const solicitarSuporteUseCase = new SolicitarSuporteUseCase(criancaRepo, notificacaoService);
 const visualizarCalendarioUseCase = new VisualizarCalendarioUseCase(
   criancaRepo,
   eventoRepo,

@@ -1,8 +1,8 @@
 import express from "express";
-import {
-  inMemoryEventoRepository,
-  inMemoryAmbienteEscolarRepository,
-} from "../../database/inMemoryRepositories.js";
+import { PrismaClient } from "@prisma/client";
+import { PrismaEventoRepository } from "../../database/PrismaEventoRepository.js";
+import { PrismaAmbienteEscolarRepository } from "../../database/PrismaAmbienteEscolarRepository.js";
+import { NotificacaoService } from "../../services/NotificacaoService.js";
 import {
   ManterCalendarioUseCase,
   type CriarEventoCalendarioInput,
@@ -16,20 +16,16 @@ import {
 
 const router = express.Router();
 
-// Repositórios em memória compartilhados para calendário e ambientes.
-// Em produção, estes seriam substituídos por implementações baseadas em banco de dados.
-const eventoRepo = inMemoryEventoRepository;
-const ambienteRepo = inMemoryAmbienteEscolarRepository;
+const prisma = new PrismaClient();
+const eventoRepo = new PrismaEventoRepository(prisma);
+const ambienteRepo = new PrismaAmbienteEscolarRepository(prisma);
+const notificacaoService = new NotificacaoService();
 
-const manterCalendarioUseCase = new ManterCalendarioUseCase(eventoRepo);
+const manterCalendarioUseCase = new ManterCalendarioUseCase(eventoRepo, notificacaoService);
 const manterAmbienteEscolarUseCase = new ManterAmbienteEscolarUseCase(
   ambienteRepo,
 );
 
-// --- Rotas de calendário escolar (equipe escolar) ---
-
-// POST /equipe-escolar/criancas/:criancaId/eventos
-// Cria um evento no calendário da criança.
 router.post("/equipe-escolar/criancas/:criancaId/eventos", async (req, res) => {
   const { criancaId } = req.params;
   const { titulo, dataHoraInicio, dataHoraFim, nivelRisco } = req.body ?? {};
@@ -57,8 +53,6 @@ router.post("/equipe-escolar/criancas/:criancaId/eventos", async (req, res) => {
   }
 });
 
-// PUT /equipe-escolar/eventos/:eventoId
-// Atualiza um evento existente do calendário.
 router.put("/equipe-escolar/eventos/:eventoId", async (req, res) => {
   const { eventoId } = req.params;
   const { titulo, dataHoraInicio, dataHoraFim, nivelRisco } = req.body ?? {};
@@ -90,8 +84,6 @@ router.put("/equipe-escolar/eventos/:eventoId", async (req, res) => {
   }
 });
 
-// DELETE /equipe-escolar/eventos/:eventoId
-// Remove um evento do calendário.
 router.delete("/equipe-escolar/eventos/:eventoId", async (req, res) => {
   const { eventoId } = req.params;
 
@@ -107,10 +99,6 @@ router.delete("/equipe-escolar/eventos/:eventoId", async (req, res) => {
   }
 });
 
-// --- Rotas de ambientes escolares (equipe escolar) ---
-
-// POST /equipe-escolar/escolas/:escolaId/ambientes
-// Cria um novo ambiente escolar associado a uma escola.
 router.post("/equipe-escolar/escolas/:escolaId/ambientes", async (req, res) => {
   const { escolaId } = req.params;
   const { nome, descricao, midias } = req.body ?? {};
@@ -144,8 +132,6 @@ router.post("/equipe-escolar/escolas/:escolaId/ambientes", async (req, res) => {
   }
 });
 
-// PUT /equipe-escolar/ambientes/:ambienteId
-// Atualiza um ambiente escolar existente.
 router.put("/equipe-escolar/ambientes/:ambienteId", async (req, res) => {
   const { ambienteId } = req.params;
   const { nome, descricao, midias } = req.body ?? {};
@@ -185,8 +171,6 @@ router.put("/equipe-escolar/ambientes/:ambienteId", async (req, res) => {
   }
 });
 
-// DELETE /equipe-escolar/ambientes/:ambienteId
-// Remove um ambiente escolar.
 router.delete("/equipe-escolar/ambientes/:ambienteId", async (req, res) => {
   const { ambienteId } = req.params;
 
