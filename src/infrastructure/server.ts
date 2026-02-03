@@ -3,6 +3,8 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import "dotenv/config";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./swagger/swaggerConfig.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +42,16 @@ class Server {
   }
 
   private setupRoutes(apiRouter: Router): void {
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: "SAPEA API - Documentação",
+    }));
+
+    this.app.get("/api-docs.json", (req, res) => {
+      res.setHeader("Content-Type", "application/json");
+      res.send(swaggerSpec);
+    });
+
     this.app.get("/api/health", (req, res) => {
       res.json({
         status: "ok",
@@ -58,6 +70,7 @@ class Server {
     this.app.listen(this.port, () => {
       console.log("SAPEA Server");
       console.log(`API: http://localhost:${this.port}/api`);
+      console.log(`Swagger: http://localhost:${this.port}/api-docs`);
       console.log(`Frontend: http://localhost:${this.port}`);
     });
   }

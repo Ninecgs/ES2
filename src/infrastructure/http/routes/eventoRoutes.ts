@@ -19,6 +19,41 @@ const visualizarCalendarioUseCase = new VisualizarCalendarioUseCase(
   eventoRepository,
 );
 
+/**
+ * @swagger
+ * /eventos:
+ *   post:
+ *     summary: Criar evento no calendário
+ *     description: Adiciona um novo evento ao calendário de uma criança. Requer perfil EQUIPE_ESCOLAR.
+ *     tags: [Eventos]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CriarEventoInput'
+ *     responses:
+ *       201:
+ *         description: Evento criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Evento criado com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/eventos", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -79,6 +114,43 @@ router.post("/eventos", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /eventos/{id}:
+ *   put:
+ *     summary: Atualizar evento
+ *     description: Atualiza os dados de um evento existente. Requer perfil EQUIPE_ESCOLAR.
+ *     tags: [Eventos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID do evento
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AtualizarEventoInput'
+ *     responses:
+ *       200:
+ *         description: Evento atualizado com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.put("/eventos/:id", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -150,6 +222,33 @@ router.put("/eventos/:id", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /eventos/{id}:
+ *   delete:
+ *     summary: Excluir evento
+ *     description: Remove um evento do calendário. Requer perfil EQUIPE_ESCOLAR.
+ *     tags: [Eventos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID do evento
+ *     responses:
+ *       200:
+ *         description: Evento excluído com sucesso
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.delete("/eventos/:id", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -190,6 +289,44 @@ router.delete("/eventos/:id", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /eventos/crianca/{criancaId}:
+ *   get:
+ *     summary: Listar eventos de uma criança
+ *     description: Retorna todos os eventos do calendário de uma criança específica
+ *     tags: [Eventos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: criancaId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     responses:
+ *       200:
+ *         description: Lista de eventos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 eventos:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Evento'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.get("/eventos/crianca/:criancaId", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {

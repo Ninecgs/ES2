@@ -20,6 +20,35 @@ const visualizarHistoricoCriseUseCase = new VisualizarHistoricoCriseUseCase(
 );
 const solicitarSuporteUseCase = new SolicitarSuporteUseCase(criancaRepository, notificacaoService);
 
+/**
+ * @swagger
+ * /crises:
+ *   post:
+ *     summary: Registrar crise
+ *     description: Registra uma nova crise para uma criança. Requer perfil EQUIPE_ESCOLAR.
+ *     tags: [Crises]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegistrarCriseInput'
+ *     responses:
+ *       201:
+ *         description: Crise registrada com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/crises", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -91,6 +120,35 @@ router.post("/crises", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /intervencoes:
+ *   post:
+ *     summary: Registrar intervenção
+ *     description: Registra uma intervenção aplicada a uma criança. Requer perfil EQUIPE_ESCOLAR.
+ *     tags: [Crises]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegistrarIntervencaoInput'
+ *     responses:
+ *       201:
+ *         description: Intervenção registrada com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/intervencoes", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -159,6 +217,43 @@ router.post("/intervencoes", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /crises/{id}/eficacia:
+ *   patch:
+ *     summary: Marcar eficácia da crise
+ *     description: Marca se as intervenções aplicadas durante uma crise foram eficazes. Requer perfil EQUIPE_ESCOLAR.
+ *     tags: [Crises]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da crise
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/MarcarEficaciaInput'
+ *     responses:
+ *       200:
+ *         description: Eficácia marcada com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.patch("/crises/:id/eficacia", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -223,6 +318,44 @@ router.patch("/crises/:id/eficacia", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /crises/crianca/{criancaId}:
+ *   get:
+ *     summary: Listar histórico de crises
+ *     description: Retorna o histórico de crises de uma criança específica
+ *     tags: [Crises]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: criancaId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     responses:
+ *       200:
+ *         description: Lista de crises
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 crises:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Crise'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.get("/crises/crianca/:criancaId", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -266,6 +399,44 @@ router.get("/crises/crianca/:criancaId", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /suporte:
+ *   post:
+ *     summary: Solicitar suporte (SOS)
+ *     description: |
+ *       Aciona o botão SOS para solicitar suporte imediato para uma criança.
+ *       Qualquer usuário autenticado pode acionar este endpoint.
+ *       Uma notificação é enviada para a equipe escolar.
+ *     tags: [Suporte]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SolicitarSuporteInput'
+ *     responses:
+ *       201:
+ *         description: Suporte solicitado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Suporte solicitado com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/suporte", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {

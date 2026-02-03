@@ -26,6 +26,58 @@ const manterAmbienteEscolarUseCase = new ManterAmbienteEscolarUseCase(
   ambienteRepo,
 );
 
+/**
+ * @swagger
+ * /equipe-escolar/criancas/{criancaId}/eventos:
+ *   post:
+ *     summary: Criar evento para criança (Equipe Escolar)
+ *     description: Adiciona um novo evento ao calendário de uma criança. Rota alternativa para equipe escolar.
+ *     tags: [Equipe Escolar]
+ *     parameters:
+ *       - in: path
+ *         name: criancaId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [titulo, dataHoraInicio, dataHoraFim, nivelRisco]
+ *             properties:
+ *               titulo:
+ *                 type: string
+ *                 example: Aula de Matemática
+ *               dataHoraInicio:
+ *                 type: string
+ *                 format: date-time
+ *               dataHoraFim:
+ *                 type: string
+ *                 format: date-time
+ *               nivelRisco:
+ *                 $ref: '#/components/schemas/NivelRisco'
+ *     responses:
+ *       201:
+ *         description: Evento criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 criancaId:
+ *                   type: string
+ *                   format: uuid
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/equipe-escolar/criancas/:criancaId/eventos", async (req, res) => {
   const { criancaId } = req.params;
   const { titulo, dataHoraInicio, dataHoraFim, nivelRisco } = req.body ?? {};
@@ -53,6 +105,37 @@ router.post("/equipe-escolar/criancas/:criancaId/eventos", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /equipe-escolar/eventos/{eventoId}:
+ *   put:
+ *     summary: Atualizar evento (Equipe Escolar)
+ *     description: Atualiza os dados de um evento existente
+ *     tags: [Equipe Escolar]
+ *     parameters:
+ *       - in: path
+ *         name: eventoId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID do evento
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AtualizarEventoInput'
+ *     responses:
+ *       200:
+ *         description: Evento atualizado com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.put("/equipe-escolar/eventos/:eventoId", async (req, res) => {
   const { eventoId } = req.params;
   const { titulo, dataHoraInicio, dataHoraFim, nivelRisco } = req.body ?? {};
@@ -84,6 +167,29 @@ router.put("/equipe-escolar/eventos/:eventoId", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /equipe-escolar/eventos/{eventoId}:
+ *   delete:
+ *     summary: Excluir evento (Equipe Escolar)
+ *     description: Remove um evento do calendário
+ *     tags: [Equipe Escolar]
+ *     parameters:
+ *       - in: path
+ *         name: eventoId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID do evento
+ *     responses:
+ *       204:
+ *         description: Evento excluído com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.delete("/equipe-escolar/eventos/:eventoId", async (req, res) => {
   const { eventoId } = req.params;
 
@@ -99,6 +205,58 @@ router.delete("/equipe-escolar/eventos/:eventoId", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /equipe-escolar/escolas/{escolaId}/ambientes:
+ *   post:
+ *     summary: Criar ambiente escolar (Equipe Escolar)
+ *     description: Cadastra um novo ambiente em uma escola para familiarização das crianças
+ *     tags: [Equipe Escolar]
+ *     parameters:
+ *       - in: path
+ *         name: escolaId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da escola
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [nome]
+ *             properties:
+ *               nome:
+ *                 type: string
+ *                 example: Biblioteca
+ *               descricao:
+ *                 type: string
+ *                 example: Biblioteca principal da escola
+ *               midias:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: uri
+ *                 description: URLs de imagens/vídeos do ambiente
+ *     responses:
+ *       201:
+ *         description: Ambiente criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 ambiente:
+ *                   $ref: '#/components/schemas/AmbienteEscolar'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/equipe-escolar/escolas/:escolaId/ambientes", async (req, res) => {
   const { escolaId } = req.params;
   const { nome, descricao, midias } = req.body ?? {};
@@ -132,6 +290,46 @@ router.post("/equipe-escolar/escolas/:escolaId/ambientes", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /equipe-escolar/ambientes/{ambienteId}:
+ *   put:
+ *     summary: Atualizar ambiente escolar (Equipe Escolar)
+ *     description: Atualiza os dados de um ambiente existente
+ *     tags: [Equipe Escolar]
+ *     parameters:
+ *       - in: path
+ *         name: ambienteId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID do ambiente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AtualizarAmbienteInput'
+ *     responses:
+ *       200:
+ *         description: Ambiente atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 ambiente:
+ *                   $ref: '#/components/schemas/AmbienteEscolar'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.put("/equipe-escolar/ambientes/:ambienteId", async (req, res) => {
   const { ambienteId } = req.params;
   const { nome, descricao, midias } = req.body ?? {};
@@ -171,6 +369,29 @@ router.put("/equipe-escolar/ambientes/:ambienteId", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /equipe-escolar/ambientes/{ambienteId}:
+ *   delete:
+ *     summary: Excluir ambiente escolar (Equipe Escolar)
+ *     description: Remove um ambiente escolar
+ *     tags: [Equipe Escolar]
+ *     parameters:
+ *       - in: path
+ *         name: ambienteId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID do ambiente
+ *     responses:
+ *       204:
+ *         description: Ambiente excluído com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.delete("/equipe-escolar/ambientes/:ambienteId", async (req, res) => {
   const { ambienteId } = req.params;
 

@@ -27,6 +27,35 @@ const obterUsuarioAutenticadoUseCase = new ObterUsuarioAutenticadoUseCase(
   usuarioRepository,
 );
 
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Registrar novo usuário
+ *     description: Cria uma nova conta de usuário no sistema
+ *     tags: [Autenticação]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegistrarUsuarioInput'
+ *     responses:
+ *       201:
+ *         description: Usuário registrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RegistrarUsuarioOutput'
+ *       400:
+ *         description: Dados inválidos (email já existe, senha fraca, etc.)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/auth/register", async (req, res) => {
   try {
     const { nome, email, senha, tipoPerfil, escolaId } = req.body ?? {};
@@ -73,6 +102,41 @@ router.post("/auth/register", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Realizar login
+ *     description: Autentica o usuário e retorna um token JWT
+ *     tags: [Autenticação]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginInput'
+ *     responses:
+ *       200:
+ *         description: Login realizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginOutput'
+ *       400:
+ *         description: Dados incompletos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Credenciais inválidas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UnauthorizedError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/auth/login", async (req, res) => {
   try {
     const { email, senha } = req.body ?? {};
@@ -111,6 +175,32 @@ router.post("/auth/login", async (req, res) => {
 });
 
 
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     summary: Obter dados do usuário autenticado
+ *     description: Retorna os dados do usuário logado com base no token JWT
+ *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Dados do usuário
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 usuario:
+ *                   $ref: '#/components/schemas/UsuarioResumo'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.get("/auth/me", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {

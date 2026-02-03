@@ -18,6 +18,42 @@ const visualizarCriancaUseCase = new VisualizarCriancaUseCase(criancaRepo, usuar
 const editarCriancaUseCase = new EditarCriancaUseCase(criancaRepo, usuarioRepo);
 const excluirCriancaUseCase = new ExcluirCriancaUseCase(criancaRepo, usuarioRepo);
 
+/**
+ * @swagger
+ * /perfis/criancas:
+ *   post:
+ *     summary: Cadastrar nova criança
+ *     description: Cria um novo perfil de criança. Professores precisam estar vinculados a uma escola.
+ *     tags: [Perfis de Crianças]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CriarCriancaInput'
+ *     responses:
+ *       201:
+ *         description: Criança cadastrada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Criança cadastrada com sucesso
+ *                 criancaId:
+ *                   type: string
+ *                   format: uuid
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/perfis/criancas", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -71,6 +107,36 @@ router.post("/perfis/criancas", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /perfis/criancas:
+ *   get:
+ *     summary: Listar crianças
+ *     description: |
+ *       Retorna a lista de crianças que o usuário pode visualizar:
+ *       - ADMIN: todas as crianças
+ *       - PROFESSOR: crianças da mesma escola
+ *       - RESPONSAVEL: apenas crianças vinculadas
+ *     tags: [Perfis de Crianças]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de crianças
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 criancas:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Crianca'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.get("/perfis/criancas", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -95,6 +161,44 @@ router.get("/perfis/criancas", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /perfis/criancas/{id}:
+ *   get:
+ *     summary: Obter perfil de criança
+ *     description: Retorna os dados de uma criança específica
+ *     tags: [Perfis de Crianças]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     responses:
+ *       200:
+ *         description: Dados da criança
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 crianca:
+ *                   $ref: '#/components/schemas/Crianca'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.get("/perfis/criancas/:id", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -148,6 +252,51 @@ router.get("/perfis/criancas/:id", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /perfis/criancas/{id}:
+ *   put:
+ *     summary: Atualizar perfil de criança
+ *     description: Atualiza os dados de uma criança. Todos os campos são opcionais.
+ *     tags: [Perfis de Crianças]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AtualizarCriancaInput'
+ *     responses:
+ *       200:
+ *         description: Criança atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Criança atualizada com sucesso
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.put("/perfis/criancas/:id", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -238,6 +387,43 @@ router.put("/perfis/criancas/:id", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /perfis/criancas/{id}:
+ *   delete:
+ *     summary: Excluir perfil de criança
+ *     description: Remove o perfil de uma criança. Requer permissão de ADMIN ou PROFESSOR da mesma escola.
+ *     tags: [Perfis de Crianças]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     responses:
+ *       200:
+ *         description: Criança excluída com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Criança excluída com sucesso
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.delete("/perfis/criancas/:id", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {

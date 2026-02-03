@@ -26,6 +26,42 @@ const visualizarAmbienteEscolarUseCase = new VisualizarAmbienteEscolarUseCase(
   ambienteRepo,
 );
 
+/**
+ * @swagger
+ * /criancas/{id}/suporte:
+ *   post:
+ *     summary: Solicitar suporte para criança  
+ *     description: |
+ *       Registra um pedido de suporte para uma criança específica.
+ *      
+ *     tags: [Suporte]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     responses:
+ *       201:
+ *         description: Pedido de suporte registrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Pedido de suporte registrado com sucesso.
+ *                 criancaId:
+ *                   type: string
+ *                   format: uuid
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/criancas/:id/suporte", async (req, res) => {
   const { id } = req.params;
 
@@ -47,6 +83,41 @@ router.post("/criancas/:id/suporte", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /criancas/{id}/calendario:
+ *   get:
+ *     summary: Visualizar calendário da criança
+ *     description: Retorna todos os eventos do calendário de uma criança específica
+ *     tags: [Eventos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     responses:
+ *       200:
+ *         description: Calendário da criança
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 criancaId:
+ *                   type: string
+ *                   format: uuid
+ *                 eventos:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Evento'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.get("/criancas/:id/calendario", async (req, res) => {
   const { id } = req.params;
 
@@ -68,6 +139,41 @@ router.get("/criancas/:id/calendario", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /criancas/{id}/ambientes:
+ *   get:
+ *     summary: Visualizar ambientes escolares da criança
+ *     description: Retorna os ambientes da escola onde a criança está matriculada para familiarização
+ *     tags: [Ambientes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     responses:
+ *       200:
+ *         description: Ambientes escolares
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 criancaId:
+ *                   type: string
+ *                   format: uuid
+ *                 ambientes:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/AmbienteEscolar'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.get("/criancas/:id/ambientes", async (req, res) => {
   const { id } = req.params;
 

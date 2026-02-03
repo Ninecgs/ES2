@@ -19,6 +19,43 @@ const visualizarAmbienteUseCase = new VisualizarAmbienteEscolarUseCase(
   ambienteRepository,
 );
 
+/**
+ * @swagger
+ * /ambientes:
+ *   post:
+ *     summary: Criar ambiente escolar
+ *     description: Cadastra um novo ambiente escolar para familiarização. Requer perfil EQUIPE_ESCOLAR.
+ *     tags: [Ambientes]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CriarAmbienteInput'
+ *     responses:
+ *       201:
+ *         description: Ambiente criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Ambiente criado com sucesso
+ *                 ambiente:
+ *                   $ref: '#/components/schemas/AmbienteEscolar'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.post("/ambientes", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -81,6 +118,52 @@ router.post("/ambientes", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /ambientes/{id}:
+ *   put:
+ *     summary: Atualizar ambiente escolar
+ *     description: Atualiza os dados de um ambiente existente. Requer perfil EQUIPE_ESCOLAR.
+ *     tags: [Ambientes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID do ambiente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AtualizarAmbienteInput'
+ *     responses:
+ *       200:
+ *         description: Ambiente atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 ambiente:
+ *                   $ref: '#/components/schemas/AmbienteEscolar'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.put("/ambientes/:id", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -156,6 +239,33 @@ router.put("/ambientes/:id", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /ambientes/{id}:
+ *   delete:
+ *     summary: Excluir ambiente escolar
+ *     description: Remove um ambiente escolar. Requer perfil EQUIPE_ESCOLAR.
+ *     tags: [Ambientes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID do ambiente
+ *     responses:
+ *       200:
+ *         description: Ambiente excluído com sucesso
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.delete("/ambientes/:id", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
@@ -196,6 +306,44 @@ router.delete("/ambientes/:id", authMiddleware, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /ambientes/crianca/{criancaId}:
+ *   get:
+ *     summary: Listar ambientes da escola de uma criança
+ *     description: Retorna todos os ambientes da escola onde a criança está matriculada
+ *     tags: [Ambientes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: criancaId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID da criança
+ *     responses:
+ *       200:
+ *         description: Lista de ambientes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ambientes:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/AmbienteEscolar'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         description: Erro interno do servidor
+ */
 router.get("/ambientes/crianca/:criancaId", authMiddleware, async (req, res) => {
   try {
     if (!req.user) {
